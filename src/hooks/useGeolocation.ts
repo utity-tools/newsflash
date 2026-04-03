@@ -14,12 +14,12 @@ function detectCountryCode(lat: number, lng: number): string {
   return DEFAULT_COUNTRY.code
 }
 
-export function useGeolocation(): { detectedCountry: Country; loading: boolean } {
+export function useGeolocation(geoProvider: Geolocation = navigator.geolocation): { detectedCountry: Country; loading: boolean } {
   const [detectedCountry, setDetectedCountry] = useState<Country>(DEFAULT_COUNTRY)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
+    geoProvider.getCurrentPosition(
       ({ coords }) => {
         const code = detectCountryCode(coords.latitude, coords.longitude)
         const country = COUNTRIES.find((c) => c.code === code) ?? DEFAULT_COUNTRY
@@ -30,7 +30,7 @@ export function useGeolocation(): { detectedCountry: Country; loading: boolean }
         setLoading(false)
       },
     )
-  }, [])
+  }, [geoProvider])
 
   return { detectedCountry, loading }
 }
