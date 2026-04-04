@@ -34,6 +34,37 @@ describe('NewsCard', () => {
     expect(screen.getByText('Test Source')).toBeInTheDocument()
   })
 
+  it('renders placeholder div when image_url is empty string', () => {
+    render(<NewsCard article={{ ...mockArticle, image_url: '' }} />)
+    expect(document.querySelector('.aspect-video.bg-zinc-800')).toBeInTheDocument()
+  })
+
+  it('renders relative time text in the footer', () => {
+    render(<NewsCard article={mockArticle} />)
+    expect(screen.getByText(/ago/i)).toBeInTheDocument()
+  })
+
+  it('renders description in the card', () => {
+    render(<NewsCard article={mockArticle} />)
+    expect(screen.getByText('Test article description')).toBeInTheDocument()
+  })
+
+  it('renders placeholder when image_url is null', () => {
+    render(<NewsCard article={{ ...mockArticle, image_url: null as unknown as string }} />)
+    expect(document.querySelector('.aspect-video.bg-zinc-800')).toBeInTheDocument()
+  })
+
+  it('renders "just now" equivalent when published_at is current time', () => {
+    render(<NewsCard article={{ ...mockArticle, published_at: new Date().toISOString() }} />)
+    expect(screen.getByText('0m ago')).toBeInTheDocument()
+  })
+
+  it('renders days ago when published_at is 2 days ago', () => {
+    const twoDaysAgo = new Date(Date.now() - 2 * 24 * 3600000).toISOString()
+    render(<NewsCard article={{ ...mockArticle, published_at: twoDaysAgo }} />)
+    expect(screen.getByText('2d ago')).toBeInTheDocument()
+  })
+
   it('opens article url in new tab when clicked', async () => {
     const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null)
     render(<NewsCard article={mockArticle} />)
