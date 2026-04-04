@@ -24,7 +24,12 @@ function App() {
     searchQuery,
   })
   useEffect(() => {
-    if (detectedCountry) setSelectedCountry(detectedCountry)
+    if (detectedCountry) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    setSelectedCountry(prev =>
+        prev.code === detectedCountry.code ? prev : detectedCountry
+      )
+    }
   }, [detectedCountry])
 
   function handleSearch(query: string) {
