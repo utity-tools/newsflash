@@ -1,4 +1,3 @@
-import { Card, CardContent } from '@/components/ui/card'
 import type { Article } from '@/types'
 
 function relativeTime(dateStr: string): string {
@@ -17,31 +16,20 @@ interface NewsCardProps {
 
 export function NewsCard({ article }: NewsCardProps) {
   return (
-    <Card
-      className="bg-zinc-900 border-zinc-800 hover:border-zinc-600 transition-all cursor-pointer gap-0 py-0"
+    <div
+      className="border-b border-zinc-900 py-6 cursor-pointer group"
       onClick={() => window.open(article.url, '_blank', 'noopener,noreferrer')}
     >
-      {article.image_url ? (
-        <img
-          src={article.image_url}
-          alt={article.title}
-          className="aspect-video w-full object-cover rounded-t-xl"
-        />
-      ) : (
-        <div className="aspect-video w-full bg-zinc-800 rounded-t-xl" />
+      <p className="text-white font-medium text-base leading-snug group-hover:text-zinc-300 transition-colors">
+        {article.title}
+      </p>
+      {article.description && (
+        <p className="text-zinc-600 text-sm mt-1 line-clamp-2">{article.description}</p>
       )}
-      <CardContent className="flex flex-col gap-2 py-4">
-        <p className="text-sm font-semibold text-white leading-snug line-clamp-2">
-          {article.title}
-        </p>
-        {article.description && (
-          <p className="text-xs text-zinc-400 line-clamp-2">{article.description}</p>
-        )}
-        <div className="flex items-center justify-between text-xs text-zinc-500 mt-1">
-          <span>{article.source}</span>
-          <span>{relativeTime(article.published_at)}</span>
-        </div>
-      </CardContent>
-    </Card>
+      <div className="flex gap-4 mt-3 text-zinc-700 text-xs">
+        <span>{article.source}</span>
+        <span>{relativeTime(article.published_at)}</span>
+      </div>
+    </div>
   )
 }
