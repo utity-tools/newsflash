@@ -1,36 +1,26 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { NewsList } from '@/components/news/NewsList'
 import { SearchBar } from '@/components/search/SearchBar'
 import { FloatingPill } from '@/components/search/FloatingPill'
 import { LiveTicker } from '@/components/search/LiveTicker'
-import { DEFAULT_COUNTRY } from '@/data/countries'
 import { TOPICS } from '@/data/topics'
 import { useGeolocation } from '@/hooks/useGeolocation'
 import { useNews } from '@/hooks/useNews'
-import type { Country, Topic } from '@/types'
+import type { Topic } from '@/types'
 
 function App() {
-  const [selectedCountry, setSelectedCountry] = useState<Country>(DEFAULT_COUNTRY)
   const [selectedTopic, setSelectedTopic] = useState<Topic & { color: string } | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
 
   const resultsRef = useRef<HTMLDivElement>(null)
   const topRef = useRef<HTMLDivElement>(null)
 
-  const { detectedCountry } = useGeolocation()
+  const { selectedCountry, setSelectedCountry } = useGeolocation()
   const { articles, loading } = useNews({
     country: selectedCountry.code,
     category: selectedTopic?.category,
     searchQuery,
   })
-  useEffect(() => {
-    if (detectedCountry) {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    setSelectedCountry(prev =>
-        prev.code === detectedCountry.code ? prev : detectedCountry
-      )
-    }
-  }, [detectedCountry])
 
   function handleSearch(query: string) {
     setSearchQuery(query)

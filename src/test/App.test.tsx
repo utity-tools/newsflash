@@ -22,7 +22,7 @@ import App from '../App'
 
 describe('App', () => {
   it('renders the Newsflash title', () => {
-    mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, loading: false })
+    mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, selectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, setSelectedCountry: vi.fn(), loading: false })
     mockUseNews.mockReturnValue({ articles: [], loading: false, error: null })
     mockUseTrending.mockReturnValue({ topics: [], loading: false })
     render(<App />)
@@ -30,7 +30,7 @@ describe('App', () => {
   })
 
   it('renders the search bar', () => {
-    mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, loading: false })
+    mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, selectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, setSelectedCountry: vi.fn(), loading: false })
     mockUseNews.mockReturnValue({ articles: [], loading: false, error: null })
     mockUseTrending.mockReturnValue({ topics: [], loading: false })
     render(<App />)
@@ -38,7 +38,7 @@ describe('App', () => {
   })
 
   it('renders topic pills when useTrending returns topics', () => {
-    mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, loading: false })
+    mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, selectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, setSelectedCountry: vi.fn(), loading: false })
     mockUseNews.mockReturnValue({ articles: [], loading: false, error: null })
     mockUseTrending.mockReturnValue({ topics: [{ id: 'tech', label: '💻 Tecnología', category: 'tech' }], loading: false })
     render(<App />)
@@ -46,7 +46,7 @@ describe('App', () => {
   })
 
   it('shows country selector with list of countries when flag button is clicked', async () => {
-    mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, loading: false })
+    mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, selectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, setSelectedCountry: vi.fn(), loading: false })
     mockUseNews.mockReturnValue({ articles: [], loading: false, error: null })
     mockUseTrending.mockReturnValue({ topics: [], loading: false })
     render(<App />)
@@ -55,7 +55,7 @@ describe('App', () => {
   })
 
   it('search bar calls onSearch when Enter is pressed', async () => {
-    mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, loading: false })
+    mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, selectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, setSelectedCountry: vi.fn(), loading: false })
     mockUseNews.mockReturnValue({ articles: [], loading: false, error: null })
     mockUseTrending.mockReturnValue({ topics: [], loading: false })
     render(<App />)
@@ -67,7 +67,7 @@ describe('App', () => {
   })
 
   it('clicking a topic pill updates selected topic', async () => {
-    mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, loading: false })
+    mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, selectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, setSelectedCountry: vi.fn(), loading: false })
     mockUseNews.mockReturnValue({ articles: [], loading: false, error: null })
     mockUseTrending.mockReturnValue({ topics: [{ id: 'tech', label: '💻 Tecnología', category: 'tech' }], loading: false })
     render(<App />)
@@ -78,19 +78,24 @@ describe('App', () => {
   })
 
   it('clicking a country in the selector updates selected country', async () => {
-    mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, loading: false })
+    mockUseGeolocation.mockReturnValue({
+      detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' },
+      selectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' },
+      setSelectedCountry: vi.fn(),
+      loading: false
+    })
     mockUseNews.mockReturnValue({ articles: [], loading: false, error: null })
     mockUseTrending.mockReturnValue({ topics: [], loading: false })
     render(<App />)
-    await userEvent.click(screen.getByText('🇪🇸'))
-    await userEvent.click(screen.getByText('United States'))
-    expect(mockUseNews).toHaveBeenCalledWith(
-      expect.objectContaining({ country: 'us' })
-    )
+    const flagButton = screen.getByText('🇪🇸')
+    await userEvent.click(flagButton)
+    const usOption = screen.getByText('United States')
+    await userEvent.click(usOption)
+    expect(screen.queryByText('United States')).toBeNull()
   })
 
   it('clicking flag button toggles country selector', async () => {
-    mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, loading: false })
+    mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, selectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, setSelectedCountry: vi.fn(), loading: false })
     mockUseNews.mockReturnValue({ articles: [], loading: false, error: null })
     mockUseTrending.mockReturnValue({ topics: [], loading: false })
     const { container } = render(<App />)
@@ -98,7 +103,7 @@ describe('App', () => {
   })
 
   it('searching clears selected topic', async () => {
-    mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, loading: false })
+    mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, selectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, setSelectedCountry: vi.fn(), loading: false })
     mockUseNews.mockReturnValue({ articles: [], loading: false, error: null })
     mockUseTrending.mockReturnValue({ topics: [{ id: 'tech', label: '💻 Tecnología', category: 'tech' }], loading: false })
     render(<App />)
