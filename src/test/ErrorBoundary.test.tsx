@@ -2,9 +2,7 @@ import { render, screen } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest'
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary'
 
-function Bomb() {
-  throw new Error('Test error message')
-}
+const Bomb = (): never => { throw new Error('Test error message') }
 
 function Safe() {
   return <p>All good</p>

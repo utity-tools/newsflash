@@ -20,7 +20,7 @@ const mockGeolocation = {
   clearWatch: vi.fn()
 }
 
-Object.defineProperty(global.navigator, 'geolocation', {
+Object.defineProperty(globalThis.navigator, 'geolocation', {
   value: mockGeolocation,
   configurable: true,
   writable: true
@@ -28,7 +28,7 @@ Object.defineProperty(global.navigator, 'geolocation', {
 
 window.HTMLElement.prototype.scrollIntoView = vi.fn()
 
-global.fetch = vi.fn().mockResolvedValue({
+globalThis.fetch = vi.fn().mockResolvedValue({
   ok: true,
   json: async () => ({ data: [], meta: { found: 0, returned: 0, limit: 10, page: 1 } })
 })
