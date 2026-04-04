@@ -26,6 +26,8 @@ Object.defineProperty(global.navigator, 'geolocation', {
   writable: true
 })
 
+window.HTMLElement.prototype.scrollIntoView = vi.fn()
+
 global.fetch = vi.fn().mockResolvedValue({
   ok: true,
   json: async () => ({ data: [], meta: { found: 0, returned: 0, limit: 10, page: 1 } })

@@ -7,7 +7,6 @@ import { DEFAULT_COUNTRY } from '@/data/countries'
 import { TOPICS } from '@/data/topics'
 import { useGeolocation } from '@/hooks/useGeolocation'
 import { useNews } from '@/hooks/useNews'
-import { useTrending } from '@/hooks/useTrending'
 import type { Country, Topic } from '@/types'
 
 function App() {
@@ -24,8 +23,6 @@ function App() {
     category: selectedTopic?.category,
     searchQuery,
   })
-  const { topics } = useTrending()
-
   useEffect(() => {
     if (detectedCountry) setSelectedCountry(detectedCountry)
   }, [detectedCountry])
