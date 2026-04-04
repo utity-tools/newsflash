@@ -1,18 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { NewsList } from '@/components/news/NewsList'
 import { SearchBar } from '@/components/search/SearchBar'
-import { TopicPill } from '@/components/search/TopicPill'
-import { COUNTRIES, DEFAULT_COUNTRY } from '@/data/countries'
+import { FloatingPill } from '@/components/search/FloatingPill'
+import { LiveTicker } from '@/components/search/LiveTicker'
+import { DEFAULT_COUNTRY } from '@/data/countries'
+import { TOPICS } from '@/data/topics'
 import { useGeolocation } from '@/hooks/useGeolocation'
 import { useNews } from '@/hooks/useNews'
-import { useTrending } from '@/hooks/useTrending'
 import type { Country, Topic } from '@/types'
 
 function App() {
   const [selectedCountry, setSelectedCountry] = useState<Country>(DEFAULT_COUNTRY)
-  const [selectedTopic, setSelectedTopic] = useState<Topic | null>(null)
+  const [selectedTopic, setSelectedTopic] = useState<Topic & { color: string } | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const [showCountrySelector, setShowCountrySelector] = useState(false)
+
+  const resultsRef = useRef<HTMLDivElement>(null)
+  const topRef = useRef<HTMLDivElement>(null)
 
   const { detectedCountry } = useGeolocation()
   const { articles, loading } = useNews({
@@ -20,78 +23,86 @@ function App() {
     category: selectedTopic?.category,
     searchQuery,
   })
-  const { topics } = useTrending()
-
   useEffect(() => {
-    setSelectedCountry(detectedCountry)
+    if (detectedCountry) {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    setSelectedCountry(prev =>
+        prev.code === detectedCountry.code ? prev : detectedCountry
+      )
+    }
   }, [detectedCountry])
 
   function handleSearch(query: string) {
     setSearchQuery(query)
     setSelectedTopic(null)
+    resultsRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  function handleTopicClick(topic: Topic) {
+  function handleTopicClick(topic: Topic & { color: string }) {
     setSelectedTopic(topic)
     setSearchQuery('')
+    resultsRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  function handleCountrySelect(country: Country) {
-    setSelectedCountry(country)
-    setShowCountrySelector(false)
-  }
+  const activeLabel = selectedTopic?.label ?? (searchQuery ? `"${searchQuery}"` : null)
 
   return (
-    <div className="bg-zinc-950 min-h-screen text-white">
-      <div className="max-w-6xl mx-auto px-4 py-6 flex flex-col gap-4">
+    <div className="bg-[#0a0a0a] text-white min-h-screen">
 
-        {/* Header */}
-        <header className="relative flex items-center justify-between">
-          <h1 className="text-2xl font-bold">⚡ Newsflash</h1>
+      {/* HOME SECTION */}
+      <section
+        ref={topRef}
+        className="min-h-screen flex flex-col items-center justify-center relative"
+      >
+        {/* Floating topic pills */}
+        {TOPICS.map((topic, index) => (
+          <FloatingPill
+            key={topic.id}
+            topic={topic}
+            index={index}
+            isSelected={selectedTopic?.id === topic.id}
+            onClick={() => handleTopicClick(topic)}
+          />
+        ))}
+
+        {/* Center content */}
+        <div className="relative z-10 w-full max-w-xl mx-auto px-6 flex flex-col items-center">
+          <p className="text-sm tracking-[0.3em] text-zinc-600 lowercase mb-12">
+            newsflash
+          </p>
+
+          <SearchBar
+            onSearch={handleSearch}
+            selectedCountry={selectedCountry}
+            onCountrySelect={setSelectedCountry}
+          />
+
+          <div className="mt-4 w-full">
+            <LiveTicker articles={articles} />
+          </div>
+        </div>
+      </section>
+
+      {/* RESULTS SECTION */}
+      <section ref={resultsRef} className="min-h-screen bg-[#0a0a0a] pt-24 pb-24">
+        <div className="max-w-2xl mx-auto px-6">
           <button
-            onClick={() => setShowCountrySelector((v) => !v)}
-            className="flex items-center gap-2 bg-zinc-800 hover:bg-zinc-700 transition-colors rounded-lg px-3 py-2 text-sm"
+            onClick={() => topRef.current?.scrollIntoView({ behavior: 'smooth' })}
+            className="text-zinc-600 text-sm hover:text-zinc-400 transition-colors mb-10 block"
           >
-            <span>{selectedCountry.flag}</span>
-            <span>{selectedCountry.name}</span>
+            ← back
           </button>
 
-          {/* Country selector dropdown */}
-          {showCountrySelector && (
-            <div className="absolute top-full right-0 mt-2 w-52 bg-zinc-900 border border-zinc-700 rounded-xl shadow-xl z-10 overflow-hidden">
-              {COUNTRIES.map((country) => (
-                <button
-                  key={country.code}
-                  onClick={() => handleCountrySelect(country)}
-                  className="flex items-center gap-3 w-full px-4 py-2.5 text-sm hover:bg-zinc-800 transition-colors text-left"
-                >
-                  <span>{country.flag}</span>
-                  <span>{country.name}</span>
-                </button>
-              ))}
-            </div>
+          {activeLabel && (
+            <p className="text-xs text-zinc-600 tracking-widest uppercase mb-8">
+              {activeLabel}
+            </p>
           )}
-        </header>
 
-        {/* Search */}
-        <SearchBar onSearch={handleSearch} />
-
-        {/* Topics */}
-        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-          {topics.map((topic) => (
-            <TopicPill
-              key={topic.id}
-              topic={topic}
-              isSelected={selectedTopic?.id === topic.id}
-              onClick={() => handleTopicClick(topic)}
-            />
-          ))}
+          <NewsList articles={articles} loading={loading} />
         </div>
+      </section>
 
-        {/* News grid */}
-        <NewsList articles={articles} loading={loading} />
-
-      </div>
     </div>
   )
 }

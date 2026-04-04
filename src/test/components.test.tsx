@@ -5,6 +5,7 @@ import { NewsList } from '@/components/news/NewsList'
 import { TopicPill } from '@/components/search/TopicPill'
 import { SearchBar } from '@/components/search/SearchBar'
 import type { Article, Topic } from '@/types'
+import { DEFAULT_COUNTRY } from '@/data/countries'
 
 const mockArticle: Article = {
   uuid: '123',
@@ -34,11 +35,6 @@ describe('NewsCard', () => {
     expect(screen.getByText('Test Source')).toBeInTheDocument()
   })
 
-  it('renders placeholder div when image_url is empty string', () => {
-    render(<NewsCard article={{ ...mockArticle, image_url: '' }} />)
-    expect(document.querySelector('.aspect-video.bg-zinc-800')).toBeInTheDocument()
-  })
-
   it('renders relative time text in the footer', () => {
     render(<NewsCard article={mockArticle} />)
     expect(screen.getByText(/ago/i)).toBeInTheDocument()
@@ -47,11 +43,6 @@ describe('NewsCard', () => {
   it('renders description in the card', () => {
     render(<NewsCard article={mockArticle} />)
     expect(screen.getByText('Test article description')).toBeInTheDocument()
-  })
-
-  it('renders placeholder when image_url is null', () => {
-    render(<NewsCard article={{ ...mockArticle, image_url: null as unknown as string }} />)
-    expect(document.querySelector('.aspect-video.bg-zinc-800')).toBeInTheDocument()
   })
 
   it('renders "just now" equivalent when published_at is current time', () => {
@@ -81,13 +72,13 @@ describe('NewsCard', () => {
 describe('NewsList', () => {
   it('shows 6 skeleton elements when loading', () => {
     const { container } = render(<NewsList articles={[]} loading={true} />)
-    const skeletons = container.querySelectorAll('[data-slot="skeleton"]')
-    expect(skeletons.length).toBe(6 * 4) // 4 skeletons per card × 6 cards
+    const skeletons = container.querySelectorAll('.animate-pulse')
+    expect(skeletons.length).toBe(6 * 3) // 3 animate-pulse divs per skeleton row × 6 rows
   })
 
-  it('shows "No news found" when articles are empty and not loading', () => {
+  it('shows "no results found" when articles are empty and not loading', () => {
     render(<NewsList articles={[]} loading={false} />)
-    expect(screen.getByText('No news found')).toBeInTheDocument()
+    expect(screen.getByText('no results found')).toBeInTheDocument()
   })
 
   it('renders correct number of cards when articles are provided', () => {
@@ -129,15 +120,27 @@ describe('TopicPill', () => {
 })
 
 describe('SearchBar', () => {
-  it('renders input with placeholder "Search news..."', () => {
-    render(<SearchBar onSearch={vi.fn()} />)
-    expect(screen.getByPlaceholderText('Search news...')).toBeInTheDocument()
+  it('renders input with placeholder "search any topic..."', () => {
+    render(
+      <SearchBar
+        onSearch={vi.fn()}
+        selectedCountry={DEFAULT_COUNTRY}
+        onCountrySelect={vi.fn()}
+      />
+    )
+    expect(screen.getByPlaceholderText('search any topic...')).toBeInTheDocument()
   })
 
   it('calls onSearch with the input value when Enter is pressed', async () => {
     const onSearch = vi.fn()
-    render(<SearchBar onSearch={onSearch} />)
-    const input = screen.getByPlaceholderText('Search news...')
+    render(
+      <SearchBar
+        onSearch={onSearch}
+        selectedCountry={DEFAULT_COUNTRY}
+        onCountrySelect={vi.fn()}
+      />
+    )
+    const input = screen.getByPlaceholderText('search any topic...')
     await userEvent.type(input, 'react news{Enter}')
     expect(onSearch).toHaveBeenCalledWith('react news')
   })
