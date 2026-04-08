@@ -1,26 +1,28 @@
 @import "tailwindcss";
 
-:root {
-  --color-ink: #111111;
-  --color-newsprint: #F5F3EE;
-  --color-press-red: #C84B2F;
-  --color-lead: #8C8880;
-  --color-column: #E8E4DB;
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Inter', system-ui, sans-serif;
-  --font-size-display: 36px;
-  --font-size-h1: 24px;
-  --font-size-h2: 18px;
-  --font-size-body: 14px;
-  --font-size-label: 11px;
-  --font-size-meta: 12px;
-  --spacing-xs: 4px;
-  --spacing-sm: 8px;
-  --spacing-md: 16px;
-  --spacing-lg: 32px;
-  --spacing-xl: 64px;
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --border-masthead: 3px solid var(--color-ink);
-  --border-default: 0.5px solid var(--color-lead);
+@layer base {
+  :root {
+    --color-ink: #111111;
+    --color-newsprint: #F5F3EE;
+    --color-press-red: #C84B2F;
+    --color-lead: #8C8880;
+    --color-column: #E8E4DB;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-body: 'Inter', system-ui, sans-serif;
+    --font-size-display: 36px;
+    --font-size-h1: 24px;
+    --font-size-h2: 18px;
+    --font-size-body: 14px;
+    --font-size-label: 11px;
+    --font-size-meta: 12px;
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 32px;
+    --spacing-xl: 64px;
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --border-masthead: 3px solid var(--color-newsprint);
+    --border-default: 0.5px solid var(--color-lead);
+  }
 }
