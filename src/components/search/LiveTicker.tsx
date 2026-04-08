@@ -12,10 +12,25 @@ export function LiveTicker({ articles }: LiveTickerProps) {
 
   return (
     <div className="flex items-center overflow-hidden max-w-xl w-full">
-      <span className="text-zinc-700 text-xs mr-4 shrink-0">· live ·</span>
+      <span
+        style={{
+          fontFamily: 'var(--font-body)',
+          fontSize: 'var(--font-size-label)',
+          color: 'var(--color-press-red)',
+          letterSpacing: '0.2em',
+        }}
+        className="uppercase shrink-0 mr-4"
+      >
+        · live ·
+      </span>
       <div className="overflow-hidden flex-1">
         <motion.p
-          className="text-zinc-500 text-xs whitespace-nowrap"
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--font-size-meta)',
+            color: 'var(--color-lead)',
+          }}
+          className="whitespace-nowrap"
           animate={{ x: ['0%', '-100%'] }}
           transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
         >

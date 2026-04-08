@@ -37,7 +37,7 @@ function App() {
   const activeLabel = selectedTopic?.label ?? (searchQuery ? `"${searchQuery}"` : null)
 
   return (
-    <div className="bg-[#0a0a0a] text-white min-h-screen">
+    <div className="bg-[var(--color-ink)] text-white min-h-screen">
 
       {/* HOME SECTION */}
       <section
@@ -57,9 +57,31 @@ function App() {
 
         {/* Center content */}
         <div className="relative z-10 w-full max-w-xl mx-auto px-6 flex flex-col items-center">
-          <p className="text-sm tracking-[0.3em] text-zinc-600 lowercase mb-12">
-            newsflash
-          </p>
+
+          {/* Masthead */}
+          <header
+            style={{ borderTop: 'var(--border-masthead)', borderBottom: 'var(--border-masthead)' }}
+            className="text-center py-3 mb-10 w-full max-w-xl"
+          >
+            <p
+              style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--font-size-label)' }}
+              className="uppercase tracking-[0.3em] text-[var(--color-lead)] mb-1"
+            >
+              THE
+            </p>
+            <h1
+              style={{ fontFamily: 'var(--font-display)', fontSize: '48px', fontWeight: 900 }}
+              className="text-[var(--color-newsprint)] leading-none tracking-tight"
+            >
+              Paperboy
+            </h1>
+            <p
+              style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--font-size-meta)' }}
+              className="text-[var(--color-lead)] mt-1 tracking-wider"
+            >
+              Your 5-minute daily briefing
+            </p>
+          </header>
 
           <SearchBar
             onSearch={handleSearch}
@@ -70,6 +92,13 @@ function App() {
           <div className="mt-4 w-full">
             <LiveTicker articles={articles} />
           </div>
+
+          <p
+            style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--font-size-meta)' }}
+            className="text-[var(--color-lead)] mt-6 text-center tracking-wide"
+          >
+            Direct. No noise. What matters, when it matters.
+          </p>
         </div>
       </section>
 

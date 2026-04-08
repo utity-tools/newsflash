@@ -32,24 +32,49 @@ export function SearchBar({ onSearch, selectedCountry, onCountrySelect }: Search
           value={value}
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="w-full bg-zinc-900/50 border border-zinc-800 rounded-2xl px-6 py-4 text-white text-lg placeholder:text-zinc-700 focus:border-zinc-600 focus:outline-none transition-colors pr-20"
+          style={{
+            background: 'transparent',
+            border: 'var(--border-default)',
+            borderRadius: 'var(--radius-md)',
+            padding: 'var(--spacing-md) var(--spacing-lg)',
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--font-size-body)',
+            color: 'var(--color-newsprint)',
+            width: '100%',
+            outline: 'none',
+            paddingRight: '80px',
+          }}
+          className="placeholder:opacity-50 focus:border-[var(--color-lead)] transition-colors"
         />
         <button
           onClick={() => setShowDropdown((v) => !v)}
-          className="absolute right-5 flex items-center gap-1 text-zinc-500 hover:text-zinc-300 transition-colors"
+          style={{ color: 'var(--color-lead)' }}
+          className="absolute right-5 flex items-center gap-1 hover:opacity-70 transition-opacity"
         >
           <span className="text-xl">{selectedCountry.flag}</span>
-          <span className="text-xs text-zinc-600">▾</span>
+          <span className="text-xs">▾</span>
         </button>
       </div>
 
       {showDropdown && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-zinc-900 border border-zinc-800 rounded-xl overflow-hidden z-20 shadow-xl">
+        <div
+          style={{
+            background: 'var(--color-ink)',
+            border: 'var(--border-default)',
+            borderRadius: 'var(--radius-md)',
+          }}
+          className="absolute top-full left-0 right-0 mt-2 overflow-hidden z-20 shadow-xl"
+        >
           {COUNTRIES.map((country) => (
             <button
               key={country.code}
               onClick={() => handleCountryClick(country)}
-              className="flex items-center gap-3 w-full px-4 py-3 text-zinc-300 hover:bg-zinc-800 transition-colors text-left text-sm"
+              style={{
+                fontFamily: 'var(--font-body)',
+                fontSize: 'var(--font-size-body)',
+                color: 'var(--color-newsprint)',
+              }}
+              className="flex items-center gap-3 w-full px-4 py-3 hover:text-[var(--color-lead)] transition-colors text-left"
             >
               <span>{country.flag}</span>
               <span>{country.name}</span>

@@ -21,12 +21,12 @@ vi.mock('../hooks/useTrending', () => ({
 import App from '../App'
 
 describe('App', () => {
-  it('renders the Newsflash title', () => {
+  it('renders the Paperboy masthead', () => {
     mockUseGeolocation.mockReturnValue({ detectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, selectedCountry: { code: 'es', name: 'Spain', flag: '🇪🇸', locale: 'es' }, setSelectedCountry: vi.fn(), loading: false })
     mockUseNews.mockReturnValue({ articles: [], loading: false, error: null })
     mockUseTrending.mockReturnValue({ topics: [], loading: false })
     render(<App />)
-    expect(screen.getByText(/Newsflash/i)).toBeDefined()
+    expect(screen.getByText(/Paperboy/i)).toBeDefined()
   })
 
   it('renders the search bar', () => {
