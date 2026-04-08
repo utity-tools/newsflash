@@ -1,10 +1,14 @@
 /// <reference types="vitest" />
 import { defineConfig } from 'vitest/config'
+import { loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+
+  return {
   plugins: [
     react(),
     tailwindcss(),
@@ -32,9 +36,27 @@ export default defineConfig({
       }
     }
   },
+  server: {
+    proxy: {
+      '/api/news': {
+        target: 'https://api.thenewsapi.com/v1',
+        changeOrigin: true,
+        rewrite: (path) => {
+          const [, search] = path.split('?')
+          const params = new URLSearchParams(search)
+          const type = params.get('type') || 'top'
+          const endpoint = type === 'search' ? '/news/all' : '/news/top'
+          params.delete('type')
+          params.set('api_token', env.VITE_NEWS_API_TOKEN)
+          return endpoint + '?' + params.toString()
+        },
+      }
+    }
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  }
 })

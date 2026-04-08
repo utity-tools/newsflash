@@ -7,7 +7,7 @@ export async function fetchTopStories(country: string, category?: string): Promi
 
     const res = await fetch(`/api/news?${params}`)
     const json: NewsApiResponse = await res.json()
-    return json.data
+    return (json.data ?? []).map((a: Article) => ({ ...a, categories: a.categories ?? [] }))
   } catch {
     return []
   }
@@ -24,7 +24,7 @@ export async function fetchBySearch(query: string, country: string): Promise<Art
 
     const res = await fetch(`/api/news?${params}`)
     const json: NewsApiResponse = await res.json()
-    return json.data
+    return (json.data ?? []).map((a: Article) => ({ ...a, categories: a.categories ?? [] }))
   } catch {
     return []
   }

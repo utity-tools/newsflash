@@ -17,18 +17,55 @@ interface NewsCardProps {
 export function NewsCard({ article }: NewsCardProps) {
   return (
     <div
-      className="border-b border-zinc-900 py-6 cursor-pointer group"
+      style={{ borderBottom: 'var(--border-default)', fontFamily: 'var(--font-body)' }}
+      className="py-5 cursor-pointer group"
       onClick={() => window.open(article.url, '_blank', 'noopener,noreferrer')}
     >
-      <p className="text-white font-medium text-base leading-snug group-hover:text-zinc-300 transition-colors">
+      {article.categories[0] && (
+        <p
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--font-size-label)',
+            color: 'var(--color-press-red)',
+          }}
+          className="uppercase tracking-widest mb-2"
+        >
+          {article.categories[0]}
+        </p>
+      )}
+
+      <p
+        style={{
+          fontFamily: 'var(--font-display)',
+          fontSize: 'var(--font-size-h1)',
+          fontWeight: 700,
+          color: 'var(--color-newsprint)',
+        }}
+        className="leading-snug group-hover:opacity-70 transition-opacity mb-2"
+      >
         {article.title}
       </p>
+
       {article.description && (
-        <p className="text-zinc-600 text-sm mt-1 line-clamp-2">{article.description}</p>
+        <p
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: 'var(--font-size-body)',
+            color: 'var(--color-lead)',
+          }}
+          className="line-clamp-2 mb-3"
+        >
+          {article.description}
+        </p>
       )}
-      <div className="flex gap-4 mt-3 text-zinc-700 text-xs">
-        <span>{article.source}</span>
-        <span>{relativeTime(article.published_at)}</span>
+
+      <div className="flex justify-between items-center">
+        <span style={{ fontSize: 'var(--font-size-meta)', color: 'var(--color-lead)' }}>
+          {article.source}
+        </span>
+        <span style={{ fontSize: 'var(--font-size-meta)', color: 'var(--color-lead)' }}>
+          {relativeTime(article.published_at)}
+        </span>
       </div>
     </div>
   )

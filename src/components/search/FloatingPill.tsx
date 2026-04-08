@@ -25,13 +25,20 @@ export function FloatingPill({ topic, index, isSelected, onClick }: FloatingPill
   return (
     <motion.button
       onClick={onClick}
-      className={[
-        'absolute rounded-full px-4 py-1.5 text-sm cursor-pointer transition-colors',
-        isSelected
-          ? 'bg-white text-zinc-950 border border-transparent'
-          : 'bg-transparent border border-zinc-800 text-zinc-500 hover:border-zinc-600 hover:text-zinc-300',
-      ].join(' ')}
-      style={position}
+      className="absolute cursor-pointer transition-colors uppercase"
+      style={{
+        ...position,
+        background: isSelected ? 'var(--color-newsprint)' : 'transparent',
+        color: isSelected ? 'var(--color-ink)' : 'var(--color-lead)',
+        borderWidth: '0.5px',
+        borderStyle: 'solid',
+        borderColor: isSelected ? 'var(--color-newsprint)' : 'rgba(140,136,128,0.4)',
+        borderRadius: '100px',
+        padding: '6px 16px',
+        fontFamily: 'var(--font-body)',
+        fontSize: 'var(--font-size-label)',
+        letterSpacing: '0.15em',
+      }}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: [0, -4, 0, 4, 0] }}
       transition={{
