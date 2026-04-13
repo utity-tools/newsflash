@@ -42,15 +42,23 @@ const SECURITY_HEADERS = {
   'Content-Type': 'application/json',
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'DENY',
-  'Cache-Control': 'no-store',
 }
+
+// Cache news responses at Vercel's edge for 5 min, serve stale up to 10 min
+// This prevents exhausting the upstream API quota on free/low-tier plans
+const CACHE_HEADERS = {
+  'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600',
+}
+
+// Error responses must never be cached
+const NO_CACHE = { 'Cache-Control': 'no-store' }
 
 export default async function handler(request: Request): Promise<Response> {
   const token = process.env.NEWS_API_TOKEN
   if (!token) {
     return new Response(JSON.stringify({ error: 'Missing API token' }), {
       status: 500,
-      headers: SECURITY_HEADERS,
+      headers: { ...SECURITY_HEADERS, ...NO_CACHE },
     })
   }
 
@@ -60,7 +68,7 @@ export default async function handler(request: Request): Promise<Response> {
   if (params.error) {
     return new Response(JSON.stringify({ error: params.error }), {
       status: 400,
-      headers: SECURITY_HEADERS,
+      headers: { ...SECURITY_HEADERS, ...NO_CACHE },
     })
   }
 
@@ -80,14 +88,16 @@ export default async function handler(request: Request): Promise<Response> {
   try {
     const res = await fetch(`${endpoint}?${upstream}`)
     const json = await res.json()
+    // Only cache successful responses
+    const cacheHeaders = res.ok ? CACHE_HEADERS : NO_CACHE
     return new Response(JSON.stringify(json), {
       status: res.status,
-      headers: SECURITY_HEADERS,
+      headers: { ...SECURITY_HEADERS, ...cacheHeaders },
     })
   } catch {
     return new Response(JSON.stringify({ error: 'Failed to fetch news' }), {
       status: 502,
-      headers: SECURITY_HEADERS,
+      headers: { ...SECURITY_HEADERS, ...NO_CACHE },
     })
   }
 }
