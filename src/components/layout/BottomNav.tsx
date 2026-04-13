@@ -1,17 +1,18 @@
-type Tab = 'home' | 'explore' | 'bookmarks' | 'profile'
+export type Tab = 'home' | 'market' | 'bookmarks' | 'profile'
 
 interface BottomNavProps {
   activeTab?: Tab
+  onTabChange?: (tab: Tab) => void
 }
 
 const TABS: { id: Tab; icon: string; label: string }[] = [
   { id: 'home', icon: 'home', label: 'Home' },
-  { id: 'explore', icon: 'explore', label: 'Explore' },
+  { id: 'market', icon: 'candlestick_chart', label: 'Market' },
   { id: 'bookmarks', icon: 'bookmarks', label: 'Saved' },
   { id: 'profile', icon: 'person', label: 'Profile' },
 ]
 
-export function BottomNav({ activeTab = 'home' }: BottomNavProps) {
+export function BottomNav({ activeTab = 'home', onTabChange }: BottomNavProps) {
   return (
     <nav
       className="fixed bottom-0 w-full z-50 flex justify-around items-center px-8 py-4"
@@ -29,6 +30,7 @@ export function BottomNav({ activeTab = 'home' }: BottomNavProps) {
           <button
             key={id}
             aria-label={label}
+            onClick={() => onTabChange?.(id)}
             className="w-12 h-12 flex items-center justify-center rounded-full transition-all active:scale-90 duration-200"
             style={
               isActive
