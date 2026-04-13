@@ -1,8 +1,7 @@
 import { useState } from 'react'
 
-const CHANNEL_ID = 'UCvN5Z0_CCskZ0mueyv67YpA'
-const CHANNEL_URL = `https://www.youtube.com/channel/${CHANNEL_ID}/live`
-const EMBED_URL = `https://www.youtube-nocookie.com/embed/live_stream?channel=${CHANNEL_ID}&autoplay=1&mute=1`
+const CHANNEL_URL = 'https://www.youtube.com/watch?v=9XMouyXI-Zo'
+const EMBED_URL = 'https://www.youtube-nocookie.com/embed/9XMouyXI-Zo?autoplay=1&mute=1'
 
 export function LiveStream() {
   const [loaded, setLoaded] = useState(false)
