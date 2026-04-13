@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { MarketSnapshot } from '@/components/market/MarketSnapshot'
+import { LiveStream } from '@/components/market/LiveStream'
 import { CryptoPulse } from '@/components/market/CryptoPulse'
 import { NewsDrawer } from '@/components/news/NewsDrawer'
 import { useNews } from '@/hooks/useNews'
@@ -199,6 +200,7 @@ export function MarketPage({ country }: MarketPageProps) {
     <>
       <main className="pt-20 pb-28 px-4 max-w-2xl mx-auto flex flex-col gap-8">
         <MarketSnapshot />
+        <LiveStream />
 
         {loading ? (
           <MarketSkeleton />
