@@ -1,5 +1,7 @@
+import { useState } from 'react'
 import type { Article } from '@/types'
 import { NewsCard } from './NewsCard'
+import { NewsDrawer } from './NewsDrawer'
 
 interface NewsListProps {
   articles: Article[]
@@ -7,6 +9,8 @@ interface NewsListProps {
 }
 
 export function NewsList({ articles, loading }: NewsListProps) {
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null)
+
   if (loading) {
     return (
       <div className="max-w-2xl mx-auto">
@@ -30,10 +34,21 @@ export function NewsList({ articles, loading }: NewsListProps) {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      {articles.map((article) => (
-        <NewsCard key={article.uuid} article={article} />
-      ))}
-    </div>
+    <>
+      <div className="max-w-2xl mx-auto">
+        {articles.map((article) => (
+          <NewsCard
+            key={article.uuid}
+            article={article}
+            onClick={setSelectedArticle}
+          />
+        ))}
+      </div>
+
+      <NewsDrawer
+        article={selectedArticle}
+        onClose={() => setSelectedArticle(null)}
+      />
+    </>
   )
 }

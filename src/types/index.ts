@@ -2,11 +2,15 @@ export interface Article {
   uuid: string
   title: string
   description: string
+  snippet: string
+  keywords: string
   url: string
   image_url: string
   published_at: string
   source: string
   categories: string[]
+  language: string
+  relevance_score: number | null
 }
 
 export interface NewsApiResponse {
