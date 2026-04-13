@@ -19,7 +19,15 @@ export function NewsCard({ article }: NewsCardProps) {
     <div
       style={{ borderBottom: 'var(--border-default)', fontFamily: 'var(--font-body)' }}
       className="py-5 cursor-pointer group"
-      onClick={() => window.open(article.url, '_blank', 'noopener,noreferrer')}
+      onClick={() => {
+        try {
+          const parsed = new URL(article.url)
+          if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return
+          window.open(article.url, '_blank', 'noopener,noreferrer')
+        } catch {
+          // invalid URL — do nothing
+        }
+      }}
     >
       {article.categories[0] && (
         <p

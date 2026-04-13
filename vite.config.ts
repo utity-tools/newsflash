@@ -47,7 +47,7 @@ export default defineConfig(({ mode }) => {
           const type = params.get('type') || 'top'
           const endpoint = type === 'search' ? '/news/all' : '/news/top'
           params.delete('type')
-          params.set('api_token', env.VITE_NEWS_API_TOKEN)
+          params.set('api_token', env.NEWS_API_TOKEN)
           return endpoint + '?' + params.toString()
         },
       }
