@@ -1,19 +1,22 @@
 import { useRef, useState } from 'react'
-import { NewsList } from '@/components/news/NewsList'
+import { TopHeader } from '@/components/layout/TopHeader'
+import { BottomNav } from '@/components/layout/BottomNav'
 import { SearchBar } from '@/components/search/SearchBar'
-import { FloatingPill } from '@/components/search/FloatingPill'
-import { LiveTicker } from '@/components/search/LiveTicker'
-import { TOPICS } from '@/data/topics'
+import { CategoryPills } from '@/components/home/CategoryPills'
+import { HeroArticle, HeroArticleSkeleton } from '@/components/home/HeroArticle'
+import { ArticleGrid } from '@/components/home/ArticleGrid'
+import { NewsletterCTA } from '@/components/home/NewsletterCTA'
+import { NewsDrawer } from '@/components/news/NewsDrawer'
 import { useGeolocation } from '@/hooks/useGeolocation'
 import { useNews } from '@/hooks/useNews'
-import type { Topic } from '@/types'
+import type { Article, Topic } from '@/types'
 
 function App() {
-  const [selectedTopic, setSelectedTopic] = useState<Topic & { color: string } | null>(null)
+  const [selectedTopic, setSelectedTopic] = useState<(Topic & { color: string }) | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null)
 
-  const resultsRef = useRef<HTMLDivElement>(null)
-  const topRef = useRef<HTMLDivElement>(null)
+  const searchInputRef = useRef<HTMLInputElement>(null)
 
   const { selectedCountry, setSelectedCountry } = useGeolocation()
   const { articles, loading } = useNews({
@@ -22,106 +25,77 @@ function App() {
     searchQuery,
   })
 
+  const [heroArticle, ...gridArticles] = articles
+
   function handleSearch(query: string) {
     setSearchQuery(query)
     setSelectedTopic(null)
-    resultsRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  function handleTopicClick(topic: Topic & { color: string }) {
-    setSelectedTopic(topic)
+  function handleTopicSelect(topic: Topic & { color: string }) {
+    setSelectedTopic((prev) => (prev?.id === topic.id ? null : topic))
     setSearchQuery('')
-    resultsRef.current?.scrollIntoView({ behavior: 'smooth' })
   }
 
-  const activeLabel = selectedTopic?.label ?? (searchQuery ? `"${searchQuery}"` : null)
+  function handleSearchFocus() {
+    searchInputRef.current?.focus()
+    searchInputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  }
 
   return (
-    <div className="bg-[var(--color-ink)] text-white min-h-screen">
+    <div style={{ background: 'var(--color-bg)', color: 'var(--color-on-surface)', minHeight: '100dvh' }}>
+      <TopHeader onSearchFocus={handleSearchFocus} />
 
-      {/* HOME SECTION */}
-      <section
-        ref={topRef}
-        className="min-h-screen flex flex-col items-center justify-center relative"
-      >
-        {/* Floating topic pills */}
-        {TOPICS.map((topic, index) => (
-          <FloatingPill
-            key={topic.id}
-            topic={topic}
-            index={index}
-            isSelected={selectedTopic?.id === topic.id}
-            onClick={() => handleTopicClick(topic)}
-          />
-        ))}
+      <main className="pt-20 pb-28 px-6 max-w-2xl mx-auto flex flex-col gap-10">
 
-        {/* Center content */}
-        <div className="relative z-10 w-full max-w-xl mx-auto px-6 flex flex-col items-center">
-
-          {/* Masthead */}
-          <header
-            style={{ borderTop: 'var(--border-masthead)', borderBottom: 'var(--border-masthead)' }}
-            className="text-center py-3 mb-10 w-full max-w-xl"
+        {/* Branding */}
+        <section className="text-center pt-6">
+          <h2
+            className="tracking-tight mb-2"
+            style={{ fontFamily: 'var(--font-display)', fontSize: 'var(--font-size-display)', fontWeight: 800, color: 'var(--color-on-surface)' }}
           >
-            <p
-              style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--font-size-label)' }}
-              className="uppercase tracking-[0.3em] text-[var(--color-lead)] mb-1"
-            >
-              THE
-            </p>
-            <h1
-              style={{ fontFamily: 'var(--font-display)', fontSize: '48px', fontWeight: 900 }}
-              className="text-[var(--color-newsprint)] leading-none tracking-tight"
-            >
-              Paperboy
-            </h1>
-            <p
-              style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--font-size-meta)' }}
-              className="text-[var(--color-lead)] mt-1 tracking-wider"
-            >
-              Your 5-minute daily briefing
-            </p>
-          </header>
-
-          <SearchBar
-            onSearch={handleSearch}
-            selectedCountry={selectedCountry}
-            onCountrySelect={setSelectedCountry}
-          />
-
-          <div className="mt-4 w-full">
-            <LiveTicker articles={articles} />
-          </div>
-
+            The Paperboy
+          </h2>
           <p
-            style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--font-size-meta)' }}
-            className="text-[var(--color-lead)] mt-6 text-center tracking-wide"
+            className="uppercase opacity-75 tracking-wider"
+            style={{ fontFamily: 'var(--font-body)', fontSize: 'var(--font-size-meta)', color: 'var(--color-on-surface-variant)' }}
           >
-            Direct. No noise. What matters, when it matters.
+            Your 5-minute daily briefing
           </p>
-        </div>
-      </section>
+        </section>
 
-      {/* RESULTS SECTION */}
-      <section ref={resultsRef} className="min-h-screen bg-[#0a0a0a] pt-24 pb-24">
-        <div className="max-w-2xl mx-auto px-6">
-          <button
-            onClick={() => topRef.current?.scrollIntoView({ behavior: 'smooth' })}
-            className="text-zinc-600 text-sm hover:text-zinc-400 transition-colors mb-10 block"
-          >
-            ← back
-          </button>
+        {/* Search */}
+        <SearchBar
+          onSearch={handleSearch}
+          selectedCountry={selectedCountry}
+          onCountrySelect={setSelectedCountry}
+          inputRef={searchInputRef}
+        />
 
-          {activeLabel && (
-            <p className="text-xs text-zinc-600 tracking-widest uppercase mb-8">
-              {activeLabel}
-            </p>
-          )}
+        {/* Category pills */}
+        <CategoryPills selected={selectedTopic} onSelect={handleTopicSelect} />
 
-          <NewsList articles={articles} loading={loading} />
-        </div>
-      </section>
+        {/* Hero / featured article */}
+        {loading
+          ? <HeroArticleSkeleton />
+          : heroArticle && <HeroArticle article={heroArticle} onClick={setSelectedArticle} />
+        }
 
+        {/* Latest editions grid */}
+        <ArticleGrid
+          articles={gridArticles}
+          loading={loading}
+          onClick={setSelectedArticle}
+        />
+
+        {/* Newsletter CTA */}
+        <NewsletterCTA />
+
+      </main>
+
+      <BottomNav activeTab="home" />
+
+      <NewsDrawer article={selectedArticle} onClose={() => setSelectedArticle(null)} />
     </div>
   )
 }

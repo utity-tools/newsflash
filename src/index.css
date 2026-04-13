@@ -2,27 +2,66 @@
 
 @layer base {
   :root {
-    --color-ink: #111111;
-    --color-newsprint: #F5F3EE;
-    --color-press-red: #C84B2F;
-    --color-lead: #8C8880;
-    --color-column: #E8E4DB;
-    --font-display: 'Playfair Display', Georgia, serif;
-    --font-body: 'Inter', system-ui, sans-serif;
-    --font-size-display: 36px;
-    --font-size-h1: 24px;
-    --font-size-h2: 18px;
+    /* Background */
+    --color-bg: #0e0e0e;
+    --color-surface: #191a1a;
+    --color-surface-high: #1f2020;
+    --color-surface-highest: #252626;
+    --color-surface-low: #131313;
+
+    /* Text */
+    --color-on-surface: #e7e5e5;
+    --color-on-surface-variant: #acabaa;
+
+    /* Accent */
+    --color-primary: #c6c6c7;
+    --color-primary-dim: #b8b9b9;
+    --color-primary-container: #454747;
+    --color-tertiary: #ff716c;
+
+    /* Borders */
+    --color-outline: #767575;
+    --color-outline-variant: #484848;
+
+    /* Typography */
+    --font-display: 'Newsreader', Georgia, serif;
+    --font-body: 'Manrope', system-ui, sans-serif;
+
+    --font-size-display: 48px;
+    --font-size-h1: 28px;
+    --font-size-h2: 20px;
     --font-size-body: 14px;
     --font-size-label: 11px;
     --font-size-meta: 12px;
+
+    /* Spacing */
     --spacing-xs: 4px;
     --spacing-sm: 8px;
     --spacing-md: 16px;
     --spacing-lg: 32px;
     --spacing-xl: 64px;
+
+    /* Radius */
     --radius-sm: 4px;
-    --radius-md: 8px;
-    --border-masthead: 3px solid var(--color-newsprint);
-    --border-default: 0.5px solid var(--color-lead);
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --radius-full: 9999px;
+
+    /* Legacy aliases (kept for NewsCard / NewsDrawer compatibility) */
+    --color-ink: #0e0e0e;
+    --color-newsprint: #e7e5e5;
+    --color-press-red: #ff716c;
+    --color-lead: #acabaa;
+    --color-column: #bfbfbf;
+    --border-masthead: 2px solid var(--color-on-surface);
+    --border-default: 0.5px solid var(--color-outline-variant);
   }
+
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    user-select: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar { display: none; }
+  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 }
