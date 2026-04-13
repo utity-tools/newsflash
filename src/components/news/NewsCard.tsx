@@ -12,22 +12,15 @@ function relativeTime(dateStr: string): string {
 
 interface NewsCardProps {
   article: Article
+  onClick: (article: Article) => void
 }
 
-export function NewsCard({ article }: NewsCardProps) {
+export function NewsCard({ article, onClick }: NewsCardProps) {
   return (
     <div
       style={{ borderBottom: 'var(--border-default)', fontFamily: 'var(--font-body)' }}
       className="py-5 cursor-pointer group"
-      onClick={() => {
-        try {
-          const parsed = new URL(article.url)
-          if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') return
-          window.open(article.url, '_blank', 'noopener,noreferrer')
-        } catch {
-          // invalid URL — do nothing
-        }
-      }}
+      onClick={() => onClick(article)}
     >
       {article.categories[0] && (
         <p

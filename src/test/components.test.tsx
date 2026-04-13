@@ -11,11 +11,15 @@ const mockArticle: Article = {
   uuid: '123',
   title: 'Test Article Title',
   description: 'Test article description',
+  snippet: 'Test article snippet',
+  keywords: 'test, article',
   url: 'https://example.com/article',
   image_url: 'https://example.com/image.jpg',
   published_at: new Date(Date.now() - 3600000).toISOString(),
   source: 'Test Source',
   categories: ['general'],
+  language: 'en',
+  relevance_score: null,
 }
 
 const mockTopic: Topic = {
@@ -26,46 +30,42 @@ const mockTopic: Topic = {
 
 describe('NewsCard', () => {
   it('renders article title', () => {
-    render(<NewsCard article={mockArticle} />)
+    render(<NewsCard article={mockArticle} onClick={vi.fn()} />)
     expect(screen.getByText('Test Article Title')).toBeInTheDocument()
   })
 
   it('renders source name', () => {
-    render(<NewsCard article={mockArticle} />)
+    render(<NewsCard article={mockArticle} onClick={vi.fn()} />)
     expect(screen.getByText('Test Source')).toBeInTheDocument()
   })
 
   it('renders relative time text in the footer', () => {
-    render(<NewsCard article={mockArticle} />)
+    render(<NewsCard article={mockArticle} onClick={vi.fn()} />)
     expect(screen.getByText(/ago/i)).toBeInTheDocument()
   })
 
   it('renders description in the card', () => {
-    render(<NewsCard article={mockArticle} />)
+    render(<NewsCard article={mockArticle} onClick={vi.fn()} />)
     expect(screen.getByText('Test article description')).toBeInTheDocument()
   })
 
   it('renders "just now" equivalent when published_at is current time', () => {
-    render(<NewsCard article={{ ...mockArticle, published_at: new Date().toISOString() }} />)
+    render(<NewsCard article={{ ...mockArticle, published_at: new Date().toISOString() }} onClick={vi.fn()} />)
     expect(screen.getByText('0m ago')).toBeInTheDocument()
   })
 
   it('renders days ago when published_at is 2 days ago', () => {
     const twoDaysAgo = new Date(Date.now() - 2 * 24 * 3600000).toISOString()
-    render(<NewsCard article={{ ...mockArticle, published_at: twoDaysAgo }} />)
+    render(<NewsCard article={{ ...mockArticle, published_at: twoDaysAgo }} onClick={vi.fn()} />)
     expect(screen.getByText('2d ago')).toBeInTheDocument()
   })
 
-  it('opens article url in new tab when clicked', async () => {
-    const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null)
-    render(<NewsCard article={mockArticle} />)
+  it('calls onClick with the article when clicked', async () => {
+    const onClick = vi.fn()
+    render(<NewsCard article={mockArticle} onClick={onClick} />)
     await userEvent.click(screen.getByText('Test Article Title'))
-    expect(openSpy).toHaveBeenCalledWith(
-      'https://example.com/article',
-      '_blank',
-      'noopener,noreferrer',
-    )
-    openSpy.mockRestore()
+    expect(onClick).toHaveBeenCalledTimes(1)
+    expect(onClick).toHaveBeenCalledWith(mockArticle)
   })
 })
 
