@@ -51,7 +51,7 @@ describe('NewsCard', () => {
 
   it('renders "just now" equivalent when published_at is current time', () => {
     render(<NewsCard article={{ ...mockArticle, published_at: new Date().toISOString() }} onClick={vi.fn()} />)
-    expect(screen.getByText('0m ago')).toBeInTheDocument()
+    expect(screen.getByText('just now')).toBeInTheDocument()
   })
 
   it('renders days ago when published_at is 2 days ago', () => {

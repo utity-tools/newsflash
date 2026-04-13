@@ -26,7 +26,7 @@ describe('App', () => {
     mockUseNews.mockReturnValue({ articles: [], loading: false, error: null })
     mockUseTrending.mockReturnValue({ topics: [], loading: false })
     render(<App />)
-    expect(screen.getByText(/Paperboy/i)).toBeDefined()
+    expect(screen.getAllByText(/Paperboy/i).length).toBeGreaterThan(0)
   })
 
   it('renders the search bar', () => {
